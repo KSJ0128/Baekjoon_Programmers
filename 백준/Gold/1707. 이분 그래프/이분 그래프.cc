@@ -1,41 +1,33 @@
 #include <iostream>
 #include <vector>
-#include <queue>
 using namespace std;
+
 vector<bool> visited;
 vector<int> color;
 vector<vector<int> > graph;
+bool check;
 
-bool BFS(int s)
+void DFS(int n)
 {
-	queue<int> q;
+	visited[n] = true;
 
-	q.push(s);
-	color[s] = 0;
-	visited[s] = true;
-
-	while(!q.empty())
+	for(int i : graph[n])
 	{
-		int f = q.front();
-		q.pop();
-
-		for(int i = 0; i < graph[f].size(); i++)
+		if (!visited[i])
 		{
-			int node = graph[f][i];
-			if(!visited[node])
-			{
-				if (color[f] == 0)
-					color[node] = 1;
-				else
-					color[node] = 0;
-				visited[node] = true;
-				q.push(node);
-			}
-			else if (color[node] == color[f])
-				return false;
+			if (color[n] == 0)
+				color[i] = 1;
+			else
+				color[i] = 0;
+			DFS(i);
+		}
+		else if(color[n] == color[i])
+		{
+			check = false;
+			return ;
 		}
 	}
-	return true;
+	return ;
 }
 
 int main()
@@ -48,27 +40,28 @@ int main()
 	cin >> K;
 	for(int i = 0; i < K; i++)
 	{
-		bool check = true;
+		check = true;
 		cin >> V >> E;
+		visited = vector<bool>(V + 1, false);
+		color = vector<int>(V + 1, -1);
 		graph.clear();
 		graph.resize(V + 1);
-		color = vector<int>(V + 1, -1);
-		visited = vector<bool>(V + 1, false);
-		for(int j = 0; j < E; j++) // 무방향 그래프 해결
+
+		for(int j = 0; j < E; j++)
 		{
 			cin >> u >> v;
 			graph[u].push_back(v);
 			graph[v].push_back(u);
 		}
-		for (int i = 1; i <= V; i++) // 비연결 그래프 해결
+
+		for (int i = 1; i <= V; i++)
 		{
-			if(visited[i] == false)
+			if(!visited[i])
 			{
-				if(!BFS(i))
-				{
-					check = false;
+				color[i] = 0;
+				DFS(i);
+				if (!check)
 					break;
-				}
 			}
 		}
 		if(check)
