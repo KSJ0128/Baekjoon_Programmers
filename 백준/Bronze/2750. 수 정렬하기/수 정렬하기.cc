@@ -1,41 +1,35 @@
 #include <iostream>
+#include <vector>
 using namespace std;
 
-void swap(int& a, int& b)
+void bubble_sort(vector<int> &arr)
 {
-    int s = a;
-    a = b;
-    b = s;
-}
-
-void selectionSort(int list[], int N) // 배열을 매개변수로 사용시 주소도 전달됨
-{
-    for(int i = 0; i < N-1; i++)
-    {
-        int least = i;
-
-        for(int j = i+1; j < N; j++)
-        {
-            if(list[j] < list[least])
-                least = j;
-        }
-        swap(list[i], list[least]);
-    }
-
+	for (int i = 0; i < arr.size() - 1; i++)
+	{
+		for (int j = 0; j < arr.size() - 1 - i; j++)
+		{
+			if (arr[j] > arr[j + 1])
+			{
+				int tmp = arr[j];
+				arr[j] = arr[j + 1];
+				arr[j + 1] = tmp;
+			}
+		}
+	}
 }
 
 int main()
 {
-    int N;
-    cin >> N;
+	int N;
+	vector<int> arr;
+	cin >> N;
 
-    int number[N];
-    
-    for(int i = 0; i < N; i++)
-        cin >> number[i];
+	arr.resize(N);
+	for (int i = 0; i < N; i++)
+		cin >> arr[i];
 
-    selectionSort(number, N);
-    
-    for(int i = 0; i < N; i++)
-        cout << number[i] << endl;
+	bubble_sort(arr);
+
+	for (int i = 0; i < N; i++)
+		cout << arr[i] << '\n';
 }
