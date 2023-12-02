@@ -11,26 +11,22 @@ int main()
 
 	int N, num, max = 0;
 	vector< pair<int, int> > arr;
-	vector<int> diff;
 
 	cin >> N;
 	arr.resize(N);
-	diff.resize(N);
 
 	for (int i = 0; i < N; i++)
 	{
-		cin >>num;
-		arr[i] = make_pair(num, i);
+		cin >> arr[i].first;
+		arr[i].second = i;
 	}
 
 	stable_sort(arr.begin(), arr.end());
 
 	for (int i = 0; i < N; i++)
 	{
-		diff[i] = arr[i].second - i;
-
-		if (max < diff[i])
-			max = diff[i];
+		if (max < arr[i].second - i)
+			max = arr[i].second - i;
 	}
 	cout << max + 1;
 }
