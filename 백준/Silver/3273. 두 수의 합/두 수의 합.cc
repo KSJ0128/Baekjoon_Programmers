@@ -1,34 +1,32 @@
 #include <iostream>
-#include <vector>
 #include <algorithm>
+#include <vector>
 using namespace std;
 int main()
 {
+	ios :: sync_with_stdio(false);
+	cin.tie(NULL);
+
 	int n, x, cnt = 0;
-	vector<int> integer;
 	cin >> n;
-	integer.resize(n);
+
+	vector<int> arr(n, 0);
 
 	for (int i = 0; i < n; i++)
-		cin >> integer[i];
-
-	sort(integer.begin(), integer.end());
+		cin >> arr[i];
 
 	cin >> x;
+	sort(arr.begin(), arr.end());
 
-	for (int i = 0; i < n - 1; i++)
+	for (int i = 0; i < n; i++)
 	{
 		for (int j = i + 1; j < n; j++)
 		{
-			if (integer[i] + integer[j] == x)
-			{
+			if (arr[i] + arr[j] == x)
 				cnt++;
-				break;
-			}
-			else if (integer[i] + integer[j] > x)
+			else if (arr[i] + arr[j] > x)
 				break;
 		}
 	}
-
 	cout << cnt;
 }
