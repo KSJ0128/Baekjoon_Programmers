@@ -1,24 +1,21 @@
 #include <iostream>
-#include <vector>
 #include <algorithm>
 using namespace std;
 int main()
 {
-	int N, num, max_index;
-	vector <int> set(10, 0);
-
+	int N, max_index;
 	cin >> N;
+
+	vector<int> set(10, 0);
+
 	while (N > 0)
 	{
-		num = N % 10;
+		set[N % 10] += 1;
 		N /= 10;
-		set[num]++;
 	}
 
-	if (set[6] >=  set[9])
-		set[6] = set[9] + (set[6] - set[9] + 1) / 2;
-	else
-		set[9] =  set[6] + (set[9] - set[6] + 1) / 2;
+	set[6] = (set[6] + set[9] + 1) / 2;
+	set[9] = set[6];
 
 	max_index = max_element(set.begin(), set.end()) - set.begin();
 	cout << set[max_index];
