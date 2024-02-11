@@ -7,67 +7,67 @@ vector<int> parent;
 
 typedef struct Edge
 {
-	int s, e, v; // 시작 노드, 끝 노드, 가중치
+	int v1, v2, w;
 
-	Edge(int start, int end, int value)
+	Edge(int a, int b, int c)
 	{
-		s = start;
-		e = end;
-		v = value;
+		v1 = a;
+		v2 = b;
+		w = c;
 	}
 
-	bool operator > (const Edge& temp) const
+	bool operator > (const Edge& e) const
 	{
-		return v > temp.v;
+		return w > e.w;
 	}
 } Edge;
 
-int find_set(int n)
+int find_set(int a)
 {
-	while (parent[n] != -1)
-		n = parent[n];
-	return n;
+	if (parent[a] == -1)
+		return a;
+	else
+		return parent[a] = find_set(parent[a]);
 }
 
-void union_set(int n1, int n2)
+void union_set(int a, int b)
 {
-	if (n1 > n2)
-	{
-		parent[n1] = n2;
-	}
-	else if(n1 == n2)
+	a = find_set(a);
+	b = find_set(b);
+
+	if (a == b)
 		return ;
+	else if (a > b)
+		parent[a] = b;
 	else
-	{
-		parent[n2] = n1;
-	}
+		parent[b] = a;
 }
 
 int main()
 {
-	int V, E, A, B, C; // 노드, 에지, 노드1, 노드2, 가중치
+	int V, E, A, B, C;
 	priority_queue< Edge, vector<Edge>, greater<Edge> > pq;
 	cin >> V >> E;
-	parent = vector<int>(V + 1, -1);
+	parent = vector<int> (V+1, -1);
 
-	for (int i = 0; i < E; i++) // 에지 정보 입력 받기
+	for (int i = 0; i < E; i++)
 	{
 		cin >> A >> B >> C;
 		pq.push(Edge(A, B, C));
 	}
 
-	int mst_edge = 0; // mst에 속하는 에지 개수
-	long long mst_weight = 0; // mst에 속하는 에지의 가중치 합
+	int mst_edge = 0;
+	long long mst_weight = 0;
 
-	while (mst_edge < V - 1)
+	while (mst_edge < V-1)
 	{
-		Edge now = pq.top();
+		Edge e = pq.top();
 		pq.pop();
 
-		if (find_set(now.s) != find_set(now.e))
+		if (find_set(e.v1) != find_set(e.v2))
 		{
-			union_set(find_set(now.s), find_set(now.e));
-			mst_weight += now.v;
+			union_set(e.v1, e.v2);
+			mst_weight += e.w;
 			mst_edge++;
 		}
 	}
