@@ -1,87 +1,73 @@
 #include <iostream>
+#include <cstring>
+#include <vector>
 #include <algorithm>
-#define MAX_COUNT 500
+#include <queue>
 using namespace std;
 
-void search(int i, int j, int& h, int danji[][25], int visited[][25]) {
-    
-    if(j-1 >= 0 && visited[i][j-1] == 0) // left
-    {
-        visited[i][j-1] = 1;
-        
-        if(danji[i][j-1] == 1)
-            search(i, j-1, ++h, danji, visited);
-    }
-    
-    if(j+1 < 25 && visited[i][j+1] == 0) // right
-    {
-        visited[i][j+1] = 1;
+int dx[] = {0,0,1,-1};
+int dy[] = {1,-1,0,0};
+char map[26][26];
+bool visited[26][26];
 
-        if(danji[i][j+1] == 1)
-            search(i, j+1, ++h, danji, visited);
-    }
-    
-    if(i-1 >= 0 && visited[i-1][j] == 0) // top
-    {
-        visited[i-1][j] = 1;
+int BFS(int row, int col, int N) {
+	queue< pair<int,int> > que;
+	visited[row][col] = true;
+	int cnt = 0;
 
-        if(danji[i-1][j] == 1)
-            search(i-1, j, ++h, danji, visited);
-    }
-    
-    if(i+1 < 25 && visited[i+1][j] == 0) // bottom
-    {
-        visited[i+1][j] = 1;
+	que.push(make_pair(row, col));
 
-        if(danji[i+1][j] == 1)
-            search(i+1, j, ++h, danji, visited);
-    }
+	while (!que.empty()) {
+		int f_row = que.front().first;
+		int f_col = que.front().second;
+		cnt++;
+
+		que.pop();
+
+		for (int i = 0; i < 4; i++) {
+			if (f_row + dx[i] >= 0 && f_row + dx[i] < N && f_col + dy[i] >= 0 && f_col + dy[i] < N)
+			{
+				if (!visited[f_row + dx[i]][f_col + dy[i]] && map[f_row + dx[i]][f_col + dy[i]] == '1') {
+					que.push(make_pair(f_row + dx[i], f_col + dy[i]));
+					visited[f_row + dx[i]][f_col + dy[i]] = true;
+				}
+			}
+		}
+	}
+
+	return cnt;
 }
 
-int main()
-{
-    int N, dCount = -1, hCount[MAX_COUNT], danji[25][25] = {0}, visited[25][25] = {0};
-    string d = "";
+int main() {
+	ios_base :: sync_with_stdio(false);
+	cin.tie(0);
+	cout.tie(0);
 
-    cin >> N;
+	int N;
+	cin >> N;
 
-    for(int i = 0; i < N; i++) // danji 초기화
-    {
-        cin >> d;
+	memset(map, 0, 26 * 26);
+	memset(visited, false, 26 * 26);
 
-        for(int j = 0; j < N; j++)
-        {
-            if(d.at(j)== '1')
-                danji[i][j] = 1;
-        }
-    }
+	for (int i = 0; i < N; i++)
+		for (int j = 0; j < N; j++)
+			cin >> map[i][j];
 
-    for(int i = 0; i < N; i++) 
-    {
-        for(int j = 0; j < N; j++)
-        {
-            if(visited[i][j] == 0) {
-                visited[i][j] = 1;
+	vector<int> house;
+	int cnt = 0;
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			if (!visited[i][j] && map[i][j] == '1') {
+				cnt++;
+				house.push_back(BFS(i, j, N));
+			}
+		}
+	}
 
-                if(danji[i][j] == 1) {
-                    int h = 1;
-                    search(i, j, h, danji, visited);
-                    hCount[++dCount] = h;
-                }
-                else
-                    continue;
-            }
-            else
-                continue;
-        }
-    }
+	sort(house.begin(), house.end());
 
-    sort(hCount, hCount+dCount+1);
+	cout << cnt << '\n';
 
-    cout << dCount+1 << endl;
-
-    for(int i = 0; i < dCount+1; i++)
-    {
-        cout << hCount[i] << endl;
-    }
+	for (int i = 0; i < house.size(); i++)
+		cout << house[i] << '\n';
 }
